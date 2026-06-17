@@ -144,7 +144,7 @@ export default function RecipeFormPage() {
   }
 
   const inputClass = "w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400";
-  const sectionClass = "bg-white dark:bg-gray-800 rounded-xl p-4 shadow space-y-4";
+  const sectionClass = "bg-white dark:bg-gray-800 rounded-xl p-4 shadow-card space-y-4";
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -189,14 +189,14 @@ export default function RecipeFormPage() {
                 <button
                   type="button"
                   onClick={() => setCatTypeFilter('')}
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-medium transition ${!catTypeFilter ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
+                  className={`px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors active:scale-95 ${!catTypeFilter ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
                 >All</button>
                 {ingCategoryTypes.map(t => (
                   <button
                     key={t.id}
                     type="button"
                     onClick={() => setCatTypeFilter(catTypeFilter === String(t.id) ? '' : String(t.id))}
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-medium transition ${catTypeFilter === String(t.id) ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors active:scale-95 ${catTypeFilter === String(t.id) ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
                   >{t.name}</button>
                 ))}
               </div>
@@ -227,12 +227,12 @@ export default function RecipeFormPage() {
                 ))}
               </select>
               {form.ingredients.length > 1 && (
-                <button type="button" onClick={() => removeIngredient(i)} className="text-red-400 hover:text-red-600 flex-shrink-0"><Trash2 size={16} /></button>
+                <button type="button" onClick={() => removeIngredient(i)} className="text-red-400 hover:text-red-600 flex-shrink-0 transition-colors active:scale-90"><Trash2 size={16} /></button>
               )}
             </div>
           ))}
 
-          <button type="button" onClick={addIngredient} className="flex items-center gap-1 text-orange-500 hover:text-orange-700 text-sm">
+          <button type="button" onClick={addIngredient} className="flex items-center gap-1 text-orange-500 hover:text-orange-700 text-sm transition-colors active:scale-95">
             <Plus size={16} /> Add ingredient
           </button>
         </section>
@@ -262,7 +262,7 @@ export default function RecipeFormPage() {
                             key={ingIdx}
                             type="button"
                             onClick={() => toggleStepIngredient(i, ingIdx)}
-                            className={`px-2 py-0.5 rounded-full text-xs border transition-colors ${
+                            className={`px-2 py-0.5 rounded-full text-xs border transition-colors active:scale-95 ${
                               selected
                                 ? 'bg-orange-500 text-white border-orange-500'
                                 : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-orange-400'
@@ -276,12 +276,12 @@ export default function RecipeFormPage() {
                   )}
                 </div>
                 {form.steps.length > 1 && (
-                  <button type="button" onClick={() => removeStep(i)} className="text-red-400 hover:text-red-600 mt-1"><Trash2 size={16} /></button>
+                  <button type="button" onClick={() => removeStep(i)} className="text-red-400 hover:text-red-600 mt-1 transition-colors active:scale-90"><Trash2 size={16} /></button>
                 )}
               </div>
             );
           })}
-          <button type="button" onClick={addStep} className="flex items-center gap-1 text-orange-500 hover:text-orange-700 text-sm">
+          <button type="button" onClick={addStep} className="flex items-center gap-1 text-orange-500 hover:text-orange-700 text-sm transition-colors active:scale-95">
             <Plus size={16} /> Add step
           </button>
         </section>
@@ -289,7 +289,7 @@ export default function RecipeFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition-colors duration-150 ease-out active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
         >
           {loading ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Recipe'}
         </button>

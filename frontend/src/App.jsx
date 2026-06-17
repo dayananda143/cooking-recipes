@@ -2,8 +2,10 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastProvider } from './contexts/ToastContext';
+import { ServerStatusProvider, useServerStatus } from './contexts/ServerStatusContext';
 import AppShell from './components/layout/AppShell';
 import LoginPage from './pages/LoginPage';
+import ServerDownPage from './pages/ServerDownPage';
 import RecipesPage from './pages/RecipesPage';
 import RecipeDetailPage from './pages/RecipeDetailPage';
 import RecipeFormPage from './pages/RecipeFormPage';
@@ -22,10 +24,17 @@ function GuestRoute() {
   return user ? <Navigate to="/recipes" replace /> : <Outlet />;
 }
 
+function ServerGate({ children }) {
+  const { down } = useServerStatus();
+  return down ? <ServerDownPage /> : children;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
+        <ServerStatusProvider>
+        <ServerGate>
         <ToastProvider>
         <AuthProvider>
           <Routes>
@@ -51,6 +60,8 @@ export default function App() {
           </Routes>
         </AuthProvider>
         </ToastProvider>
+        </ServerGate>
+        </ServerStatusProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

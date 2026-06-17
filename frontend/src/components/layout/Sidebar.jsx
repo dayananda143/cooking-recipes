@@ -16,7 +16,7 @@ const manageLinks = [
 export default function Sidebar({ onClose }) {
   const linkClass = ({ isActive }) =>
     clsx(
-      'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+      'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors active:scale-[0.98]',
       isActive
         ? 'bg-orange-600 text-white'
         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
@@ -30,7 +30,7 @@ export default function Sidebar({ onClose }) {
           <ChefHat size={18} className="text-orange-400" />
           <span className="text-sm font-bold text-white">Cooking Recipes</span>
         </div>
-        <button onClick={onClose} className="text-gray-400 hover:text-white p-1">
+        <button onClick={onClose} className="text-gray-400 hover:text-white p-1 transition-colors active:scale-90">
           <X size={18} />
         </button>
       </div>
@@ -57,7 +57,7 @@ export default function Sidebar({ onClose }) {
           <NavLink
             to="/recipes/new"
             className={({ isActive }) => clsx(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors active:scale-[0.98]',
               isActive
                 ? 'bg-orange-600 text-white'
                 : 'text-gray-300 hover:bg-gray-800 hover:text-white'

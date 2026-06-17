@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-16T00:00:00Z",
+  "title": "Design System: Cooking Recipes",
+  "extensions": {
+    "colorMeta": {
+      "toasted-orange": { "role": "primary", "displayName": "Toasted Orange", "canonical": "#f97316", "tonalRamp": ["#431407", "#7c2d12", "#9a3412", "#c2410c", "#ea580c", "#f97316", "#fb923c", "#fed7aa"] },
+      "toasted-orange-deep": { "role": "primary-hover", "displayName": "Deep Toasted Orange", "canonical": "#ea580c" },
+      "warm-linen": { "role": "neutral", "displayName": "Warm Linen", "canonical": "#fff7ed" },
+      "paper-white": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff" },
+      "surface-charcoal": { "role": "neutral-dark", "displayName": "Charcoal Surface", "canonical": "#1f2937" },
+      "ink-charcoal": { "role": "neutral-text", "displayName": "Charcoal Ink", "canonical": "#111827" },
+      "ink-near-black": { "role": "neutral-dark-bg", "displayName": "Near Black", "canonical": "#030712" },
+      "hairline-gray": { "role": "border", "displayName": "Hairline Gray", "canonical": "#f3f4f6" },
+      "border-gray": { "role": "border", "displayName": "Border Gray", "canonical": "#e5e7eb" },
+      "muted-gray": { "role": "text-muted", "displayName": "Muted Gray", "canonical": "#9ca3af" },
+      "secondary-text-gray": { "role": "text-secondary", "displayName": "Secondary Text Gray", "canonical": "#6b7280" },
+      "semantic-success": { "role": "status-success", "displayName": "Success Green", "canonical": "#16a34a" },
+      "semantic-warning": { "role": "status-warning", "displayName": "Warning Amber", "canonical": "#ca8a04" },
+      "semantic-danger": { "role": "status-danger", "displayName": "Danger Red", "canonical": "#dc2626" },
+      "semantic-info": { "role": "status-info", "displayName": "Info Blue", "canonical": "#3b82f6" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Recipe detail title only." },
+      "headline": { "displayName": "Headline", "purpose": "Page titles (All Recipes, Units, Ingredient Categories)." },
+      "title": { "displayName": "Title", "purpose": "Section labels inside forms and cards." },
+      "body": { "displayName": "Body", "purpose": "List rows, descriptions, form inputs." },
+      "label": { "displayName": "Label", "purpose": "Metadata, counts, badges, timestamps." }
+    },
+    "shadows": [
+      { "name": "shadow-card", "value": "0 1px 3px 0 rgba(154,52,18,0.08), 0 1px 2px -1px rgba(154,52,18,0.06)", "purpose": "Resting state for recipe cards, stat tiles, active form panels." },
+      { "name": "shadow-card-hover", "value": "0 4px 12px -2px rgba(154,52,18,0.12), 0 2px 4px -2px rgba(154,52,18,0.08)", "purpose": "Hover lift for recipe cards; resting state for the recipe hero image." },
+      { "name": "shadow-card-lg", "value": "0 12px 32px -8px rgba(154,52,18,0.18), 0 4px 12px -4px rgba(154,52,18,0.1)", "purpose": "Modals, dropdowns, login card — anything floating above the full page." }
+    ],
+    "motion": [
+      { "name": "ease-out (strong)", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Default for entrances (pop-in, fade-in) — starts fast, feels responsive." },
+      { "name": "ease-drawer", "value": "cubic-bezier(0.32, 0.72, 0, 1)", "purpose": "Mobile sidebar drawer slide, iOS-style." },
+      { "name": "duration-fast", "value": "150ms", "purpose": "Exits, dialog/dropdown close, toast leave." },
+      { "name": "duration-standard", "value": "180-200ms", "purpose": "Entrances, hover transitions." },
+      { "name": "stagger-step", "value": "30ms", "purpose": "Per-card delay in recipe grid entrance, capped at 10 items." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main call-to-action button (Save, Add, Create, Sign In).",
+      "html": "<button class=\"ds-btn-primary\">Add Recipe</button>",
+      "css": ".ds-btn-primary { background: #f97316; color: #ffffff; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; border: none; transition: background-color 150ms, transform 150ms cubic-bezier(0.23,1,0.32,1); } .ds-btn-primary:hover { background: #ea580c; } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #fb923c; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Icon Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Icon-only secondary action (edit, delete, favorite, back).",
+      "html": "<button class=\"ds-btn-ghost\" aria-label=\"Delete\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6\"/></svg></button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #9ca3af; padding: 8px; border-radius: 8px; border: none; transition: background-color 150ms, color 150ms, transform 150ms; } .ds-btn-ghost:hover { color: #dc2626; background: #fef2f2; } .ds-btn-ghost:active { transform: scale(0.9); } .ds-btn-ghost:focus-visible { outline: 2px solid #fb923c; outline-offset: 2px; }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip-active",
+      "description": "Toggleable filter pill (category type, difficulty).",
+      "html": "<button class=\"ds-chip ds-chip-active\">All</button>",
+      "css": ".ds-chip { border-radius: 9999px; padding: 4px 12px; font-size: 12px; font-weight: 500; border: none; transition: background-color 150ms, transform 150ms; } .ds-chip:active { transform: scale(0.95); } .ds-chip-active { background: #f97316; color: #ffffff; } .ds-chip-inactive { background: #f3f4f6; color: #6b7280; } .ds-chip-inactive:hover { background: #e5e7eb; }"
+    },
+    {
+      "name": "Recipe Card",
+      "kind": "card",
+      "refersTo": "card-recipe",
+      "description": "Clickable recipe tile in the grid — image, title, meta.",
+      "html": "<a class=\"ds-card-recipe\"><div class=\"ds-card-recipe-img\"></div><div class=\"ds-card-recipe-body\"><h3>Weeknight Pasta</h3><p>30 min &middot; 4 servings</p></div></a>",
+      "css": ".ds-card-recipe { display: block; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px 0 rgba(154,52,18,0.08), 0 1px 2px -1px rgba(154,52,18,0.06); transition: box-shadow 200ms; } .ds-card-recipe:hover { box-shadow: 0 4px 12px -2px rgba(154,52,18,0.12), 0 2px 4px -2px rgba(154,52,18,0.08); } .ds-card-recipe-img { width: 100%; height: 160px; background: #ffedd5; transition: transform 300ms cubic-bezier(0.23,1,0.32,1); } .ds-card-recipe:hover .ds-card-recipe-img { transform: scale(1.05); } .ds-card-recipe-body { padding: 16px; } .ds-card-recipe-body h3 { font-size: 14px; font-weight: 600; color: #1f2937; margin: 0; } .ds-card-recipe-body p { font-size: 12px; color: #9ca3af; margin: 4px 0 0; }"
+    },
+    {
+      "name": "Flat List Row",
+      "kind": "card",
+      "refersTo": "list-row",
+      "description": "Sequential list item (units, categories, category types) — border, no shadow.",
+      "html": "<div class=\"ds-list-row\"><span>Teaspoon</span><span class=\"ds-list-row-tag\">tsp</span></div>",
+      "css": ".ds-list-row { display: flex; align-items: center; gap: 12px; background: #ffffff; border: 1px solid #f3f4f6; border-radius: 12px; padding: 12px 16px; } .ds-list-row-tag { font-size: 12px; font-family: monospace; color: #6b7280; background: #f3f4f6; padding: 2px 8px; border-radius: 9999px; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Standard text input / select used across all forms.",
+      "html": "<input class=\"ds-input\" placeholder=\"Recipe title\" />",
+      "css": ".ds-input { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 12px; font-size: 14px; background: #ffffff; color: #111827; transition: box-shadow 150ms; } .ds-input::placeholder { color: #9ca3af; } .ds-input:focus { outline: none; box-shadow: 0 0 0 2px #fb923c; }"
+    },
+    {
+      "name": "Sidebar Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-sidebar-link",
+      "description": "Dark sidebar navigation item, active vs inactive.",
+      "html": "<a class=\"ds-nav-link ds-nav-link-active\">All Recipes</a>",
+      "css": ".ds-nav-link { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #d1d5db; transition: background-color 150ms, color 150ms, transform 150ms; } .ds-nav-link:hover { background: #1f2937; color: #ffffff; } .ds-nav-link:active { transform: scale(0.98); } .ds-nav-link-active { background: #ea580c; color: #ffffff; }"
+    },
+    {
+      "name": "Confirm Dialog",
+      "kind": "custom",
+      "refersTo": "dialog-confirm",
+      "description": "Shared destructive-action confirmation modal used app-wide.",
+      "html": "<div class=\"ds-dialog-backdrop\"><div class=\"ds-dialog-panel\"><h3>Delete Recipe</h3><p>This cannot be undone.</p><div class=\"ds-dialog-actions\"><button class=\"ds-btn-cancel\">Cancel</button><button class=\"ds-btn-danger\">Delete</button></div></div></div>",
+      "css": ".ds-dialog-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); } .ds-dialog-panel { background: #ffffff; border-radius: 16px; box-shadow: 0 12px 32px -8px rgba(154,52,18,0.18), 0 4px 12px -4px rgba(154,52,18,0.1); padding: 24px; max-width: 384px; transform-origin: center; } .ds-btn-cancel { border: 1px solid #e5e7eb; background: transparent; color: #4b5563; border-radius: 12px; padding: 10px; transition: background-color 150ms, transform 150ms; } .ds-btn-cancel:active { transform: scale(0.97); } .ds-btn-danger { background: #ef4444; color: #ffffff; border-radius: 12px; padding: 10px; border: none; transition: background-color 150ms, transform 150ms; } .ds-btn-danger:hover { background: #dc2626; } .ds-btn-danger:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Toast",
+      "kind": "custom",
+      "refersTo": "toast",
+      "description": "Bottom-right transient notification, dark pill, slide in/out.",
+      "html": "<div class=\"ds-toast\">Recipe saved</div>",
+      "css": ".ds-toast { display: flex; align-items: center; gap: 12px; background: #111827; color: #ffffff; border-radius: 12px; padding: 12px 16px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); min-width: 240px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Family Recipe Box",
+    "overview": "This is the digital version of the index-card box on the kitchen counter: a little worn at the edges of use, never at the edges of trust. Every screen exists to answer one question fast — \"what am I cooking, and what do I need\" — so the design favors quiet legibility over decoration. One accent color (toasted orange) carries warmth; everything else is restrained charcoal-on-paper so the recipe content, not the chrome, is the thing you look at.\n\nIt explicitly rejects generic SaaS dashboard density (data tables, KPI tiles, sidebar-heavy chrome dressed up as a \"tool\"), recipe-blog clutter (ads, preambles, popups between you and the ingredient list), and playful/gamified consumer-app styling (badges, confetti, mascots) — this is a daily-use household object, not a marketing surface.",
+    "keyCharacteristics": [
+      "One accent (toasted orange), used deliberately and sparingly — never as a background wash.",
+      "Flat list rows for sequential data; elevation reserved for things that are genuinely a card.",
+      "Warm-tinted shadows (burnt-orange rgba, not flat black) so elevation reads as part of the same palette.",
+      "One destructive-confirmation pattern, one motion vocabulary, reused everywhere rather than invented per screen."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Toasted Orange is the only saturated brand color on any screen. Status colors are functional, not decorative, and never substitute for the primary accent on a CTA.", "section": "colors" },
+      { "name": "The One Family Rule", "body": "Outfit covers every role via weight, never a second typeface.", "section": "typography" },
+      { "name": "The Earned Elevation Rule", "body": "A shadow only appears where something is genuinely a card. Sequential rows get a hairline border instead — never both on the same flat row.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Toasted Orange (#f97316) as the only saturated accent on any screen.",
+      "Do use a hairline border on flat sequential list rows instead of a shadow.",
+      "Do tint shadows toward burnt-orange rather than flat black, on every card/modal/dropdown.",
+      "Do give every pressable element active:scale feedback — no exceptions.",
+      "Do reuse the single shared Confirm Dialog component for any destructive action.",
+      "Do respect prefers-reduced-motion globally."
+    ],
+    "donts": [
+      "Don't introduce generic SaaS dashboard density — data tables, KPI stat tiles, sidebar-heavy admin chrome.",
+      "Don't add recipe-blog clutter — ads, preambles, popups.",
+      "Don't add playful/gamified styling — badges, confetti, mascots, novelty icons.",
+      "Don't pair a border and a shadow on the same flat list row.",
+      "Don't use scale(0) as an entrance animation starting point.",
+      "Don't introduce a second typeface.",
+      "Don't use window.confirm() / window.alert() for any in-app confirmation or error."
+    ]
+  }
+}

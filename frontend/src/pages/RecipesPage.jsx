@@ -73,17 +73,22 @@ export default function RecipesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recipes.map(r => (
-            <Link key={r.id} to={`/recipes/${r.id}`} className="bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-md transition overflow-hidden group">
+          {recipes.map((r, i) => (
+            <Link
+              key={r.id}
+              to={`/recipes/${r.id}`}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-card hover:shadow-card-hover transition-shadow duration-200 overflow-hidden group animate-slide-in"
+              style={{ animationDelay: `${Math.min(i, 10) * 30}ms`, animationFillMode: 'backwards' }}
+            >
               {r.image_url ? (
-                <img src={r.image_url} alt={r.title} className="w-full h-40 object-cover group-hover:scale-105 transition-transform" />
+                <img src={r.image_url} alt={r.title} className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300 ease-out" />
               ) : (
                 <div className="w-full h-40 bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-4xl">🍳</div>
               )}
               <div className="p-4">
                 <div className="flex items-start justify-between">
-                  <h3 className="font-semibold text-gray-800 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition">{r.title}</h3>
-                  <button onClick={e => toggleFavorite(e, r.id)} className="ml-2 flex-shrink-0">
+                  <h3 className="font-semibold text-gray-800 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">{r.title}</h3>
+                  <button onClick={e => toggleFavorite(e, r.id)} className="ml-2 flex-shrink-0 transition-transform active:scale-90">
                     <Heart size={18} className={r.is_favorited ? 'fill-red-500 text-red-500' : 'text-gray-300 hover:text-red-400'} />
                   </button>
                 </div>

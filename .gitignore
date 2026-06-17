@@ -7,3 +7,8 @@ backend/data/*.db-shm
 backend/data/*.db-wal
 backend/.env
 *.log
+
+# AI agent tooling — local skill installs / harness config, not app code
+.agents/
+.codex/
+skills-lock.json

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Pencil, Trash2, Plus, X, Check, Ruler } from 'lucide-react';
 import client from '../api/client';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 function UnitForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState(initial ?? { name: '', abbreviation: '' });
@@ -43,14 +44,14 @@ function UnitForm({ initial, onSave, onCancel }) {
         <button
           type="button"
           onClick={onCancel}
-          className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
+          className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors active:scale-95"
         >
           <X size={14} /> Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex items-center gap-1 px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-50"
+          className="flex items-center gap-1 px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors active:scale-95 disabled:opacity-50 disabled:active:scale-100"
         >
           <Check size={14} /> {saving ? 'Saving…' : 'Save'}
         </button>
@@ -64,6 +65,8 @@ export default function UnitsPage() {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -89,10 +92,15 @@ export default function UnitsPage() {
     load();
   }
 
-  async function handleDelete(unit) {
-    if (!confirm(`Delete unit "${unit.name}"?`)) return;
-    await client.delete(`/units/${unit.id}`);
-    load();
+  async function confirmDelete() {
+    setDeleting(true);
+    try {
+      await client.delete(`/units/${deleteTarget.id}`);
+      setDeleteTarget(null);
+      load();
+    } finally {
+      setDeleting(false);
+    }
   }
 
   return (
@@ -105,7 +113,7 @@ export default function UnitsPage() {
         {!showAdd && (
           <button
             onClick={() => { setShowAdd(true); setEditingId(null); }}
-            className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition"
+            className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors active:scale-95"
           >
             <Plus size={16} /> Add Unit
           </button>
@@ -113,7 +121,7 @@ export default function UnitsPage() {
       </div>
 
       {showAdd && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 mb-4 border border-orange-200 dark:border-orange-800">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-card p-4 mb-4 border border-orange-200 dark:border-orange-800">
           <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">New Unit</h2>
           <UnitForm onSave={handleAdd} onCancel={() => setShowAdd(false)} />
         </div>
@@ -129,7 +137,7 @@ export default function UnitsPage() {
       ) : (
         <div className="space-y-2">
           {units.map(unit => (
-            <div key={unit.id} className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+            <div key={unit.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
               {editingId === unit.id ? (
                 <div className="p-4">
                   <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Edit Unit</h2>
@@ -152,13 +160,13 @@ export default function UnitsPage() {
                   <div className="flex items-center gap-1 flex-shrink-0">
                     <button
                       onClick={() => { setEditingId(unit.id); setShowAdd(false); }}
-                      className="p-1.5 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                      className="p-1.5 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors active:scale-90"
                     >
                       <Pencil size={15} />
                     </button>
                     <button
-                      onClick={() => handleDelete(unit)}
-                      className="p-1.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                      onClick={() => setDeleteTarget(unit)}
+                      className="p-1.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors active:scale-90"
                     >
                       <Trash2 size={15} />
                     </button>
@@ -169,6 +177,16 @@ export default function UnitsPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete unit"
+        description={`Delete unit "${deleteTarget?.name}"?`}
+        icon={Trash2}
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

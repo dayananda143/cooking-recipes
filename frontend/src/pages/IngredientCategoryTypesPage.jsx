@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Pencil, Trash2, Plus, X, Check, Layers } from 'lucide-react';
 import client from '../api/client';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 function TypeForm({ initial, onSave, onCancel }) {
   const [name, setName] = useState(initial?.name ?? '');
@@ -27,10 +28,10 @@ function TypeForm({ initial, onSave, onCancel }) {
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <div className="flex gap-2 justify-end">
-        <button type="button" onClick={onCancel} className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition">
+        <button type="button" onClick={onCancel} className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors active:scale-95">
           <X size={14} /> Cancel
         </button>
-        <button type="submit" disabled={saving} className="flex items-center gap-1 px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-50">
+        <button type="submit" disabled={saving} className="flex items-center gap-1 px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors active:scale-95 disabled:opacity-50 disabled:active:scale-100">
           <Check size={14} /> {saving ? 'Saving…' : 'Save'}
         </button>
       </div>
@@ -43,6 +44,8 @@ export default function IngredientCategoryTypesPage() {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -54,10 +57,15 @@ export default function IngredientCategoryTypesPage() {
 
   async function handleAdd(form) { await client.post('/ingredient-category-types', form); setShowAdd(false); load(); }
   async function handleEdit(id, form) { await client.put(`/ingredient-category-types/${id}`, form); setEditingId(null); load(); }
-  async function handleDelete(t) {
-    if (!confirm(`Delete type "${t.name}"? Categories using this type will become untyped.`)) return;
-    await client.delete(`/ingredient-category-types/${t.id}`);
-    load();
+  async function confirmDelete() {
+    setDeleting(true);
+    try {
+      await client.delete(`/ingredient-category-types/${deleteTarget.id}`);
+      setDeleteTarget(null);
+      load();
+    } finally {
+      setDeleting(false);
+    }
   }
 
   return (
@@ -68,14 +76,14 @@ export default function IngredientCategoryTypesPage() {
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Group ingredient categories by type (e.g. Spices, Regular)</p>
         </div>
         {!showAdd && (
-          <button onClick={() => { setShowAdd(true); setEditingId(null); }} className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition">
+          <button onClick={() => { setShowAdd(true); setEditingId(null); }} className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors active:scale-95">
             <Plus size={16} /> Add Type
           </button>
         )}
       </div>
 
       {showAdd && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 mb-4 border border-orange-200 dark:border-orange-800">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-card p-4 mb-4 border border-orange-200 dark:border-orange-800">
           <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">New Type</h2>
           <TypeForm onSave={handleAdd} onCancel={() => setShowAdd(false)} />
         </div>
@@ -91,7 +99,7 @@ export default function IngredientCategoryTypesPage() {
       ) : (
         <div className="space-y-2">
           {types.map(t => (
-            <div key={t.id} className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+            <div key={t.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
               {editingId === t.id ? (
                 <div className="p-4">
                   <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Edit Type</h2>
@@ -102,8 +110,8 @@ export default function IngredientCategoryTypesPage() {
                   <Layers size={16} className="text-orange-400 flex-shrink-0" />
                   <span className="flex-1 font-medium text-gray-800 dark:text-white">{t.name}</span>
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    <button onClick={() => { setEditingId(t.id); setShowAdd(false); }} className="p-1.5 text-gray-400 hover:text-blue-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"><Pencil size={15} /></button>
-                    <button onClick={() => handleDelete(t)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"><Trash2 size={15} /></button>
+                    <button onClick={() => { setEditingId(t.id); setShowAdd(false); }} className="p-1.5 text-gray-400 hover:text-blue-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors active:scale-90"><Pencil size={15} /></button>
+                    <button onClick={() => setDeleteTarget(t)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors active:scale-90"><Trash2 size={15} /></button>
                   </div>
                 </div>
               )}
@@ -111,6 +119,16 @@ export default function IngredientCategoryTypesPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete category type"
+        description={`Delete type "${deleteTarget?.name}"? Categories using this type will become untyped.`}
+        icon={Trash2}
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

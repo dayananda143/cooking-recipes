@@ -22,6 +22,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Health check (used by the frontend to detect/recover from outages)
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+
 // Public routes
 app.use('/api/auth', authRouter);
 

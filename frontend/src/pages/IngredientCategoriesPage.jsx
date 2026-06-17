@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Pencil, Trash2, Plus, X, Check, Tag } from 'lucide-react';
 import client from '../api/client';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 const PRESET_COLORS = [
   '#f97316', '#ef4444', '#eab308', '#22c55e', '#3b82f6',
@@ -49,7 +50,7 @@ function CategoryForm({ initial, types, onSave, onCancel }) {
       <div className="flex flex-wrap gap-2">
         {PRESET_COLORS.map(c => (
           <button key={c} type="button" onClick={() => setForm(f => ({ ...f, color: c }))}
-            className="w-6 h-6 rounded-full border-2 transition-transform hover:scale-110"
+            className="w-6 h-6 rounded-full border-2 transition-transform duration-150 ease-out hover:scale-110 active:scale-95"
             style={{ backgroundColor: c, borderColor: form.color === c ? '#1f2937' : 'transparent' }}
           />
         ))}
@@ -73,10 +74,10 @@ function CategoryForm({ initial, types, onSave, onCancel }) {
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <div className="flex gap-2 justify-end">
-        <button type="button" onClick={onCancel} className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition">
+        <button type="button" onClick={onCancel} className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors active:scale-95">
           <X size={14} /> Cancel
         </button>
-        <button type="submit" disabled={saving} className="flex items-center gap-1 px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-50">
+        <button type="submit" disabled={saving} className="flex items-center gap-1 px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors active:scale-95 disabled:opacity-50 disabled:active:scale-100">
           <Check size={14} /> {saving ? 'Saving…' : 'Save'}
         </button>
       </div>
@@ -91,6 +92,8 @@ export default function IngredientCategoriesPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [filterType, setFilterType] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -110,13 +113,15 @@ export default function IngredientCategoriesPage() {
 
   async function handleAdd(form) { await client.post('/ingredient-categories', form); setShowAdd(false); load(); }
   async function handleEdit(id, form) { await client.put(`/ingredient-categories/${id}`, form); setEditingId(null); load(); }
-  async function handleDelete(cat) {
-    const msg = cat.ingredient_count > 0
-      ? `"${cat.name}" is used by ${cat.ingredient_count} ingredient(s). They will be uncategorized. Delete anyway?`
-      : `Delete category "${cat.name}"?`;
-    if (!confirm(msg)) return;
-    await client.delete(`/ingredient-categories/${cat.id}`);
-    load();
+  async function confirmDelete() {
+    setDeleting(true);
+    try {
+      await client.delete(`/ingredient-categories/${deleteTarget.id}`);
+      setDeleteTarget(null);
+      load();
+    } finally {
+      setDeleting(false);
+    }
   }
 
   const filtered = filterType ? categories.filter(c => String(c.type_id) === filterType) : categories;
@@ -129,7 +134,7 @@ export default function IngredientCategoriesPage() {
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Organize ingredients into groups</p>
         </div>
         {!showAdd && (
-          <button onClick={() => { setShowAdd(true); setEditingId(null); }} className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition">
+          <button onClick={() => { setShowAdd(true); setEditingId(null); }} className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors active:scale-95">
             <Plus size={16} /> Add Category
           </button>
         )}
@@ -140,20 +145,20 @@ export default function IngredientCategoriesPage() {
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setFilterType('')}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition ${!filterType ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors active:scale-95 ${!filterType ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
           >All</button>
           {types.map(t => (
             <button
               key={t.id}
               onClick={() => setFilterType(String(t.id))}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition ${filterType === String(t.id) ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors active:scale-95 ${filterType === String(t.id) ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
             >{t.name}</button>
           ))}
         </div>
       )}
 
       {showAdd && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 mb-4 border border-orange-200 dark:border-orange-800">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-card p-4 mb-4 border border-orange-200 dark:border-orange-800">
           <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">New Category</h2>
           <CategoryForm types={types} onSave={handleAdd} onCancel={() => setShowAdd(false)} />
         </div>
@@ -169,7 +174,7 @@ export default function IngredientCategoriesPage() {
       ) : (
         <div className="space-y-2">
           {filtered.map(cat => (
-            <div key={cat.id} className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+            <div key={cat.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
               {editingId === cat.id ? (
                 <div className="p-4">
                   <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Edit Category</h2>
@@ -194,8 +199,8 @@ export default function IngredientCategoriesPage() {
                     {cat.description && <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{cat.description}</p>}
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    <button onClick={() => { setEditingId(cat.id); setShowAdd(false); }} className="p-1.5 text-gray-400 hover:text-blue-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"><Pencil size={15} /></button>
-                    <button onClick={() => handleDelete(cat)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"><Trash2 size={15} /></button>
+                    <button onClick={() => { setEditingId(cat.id); setShowAdd(false); }} className="p-1.5 text-gray-400 hover:text-blue-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors active:scale-90"><Pencil size={15} /></button>
+                    <button onClick={() => setDeleteTarget(cat)} className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors active:scale-90"><Trash2 size={15} /></button>
                   </div>
                 </div>
               )}
@@ -203,6 +208,20 @@ export default function IngredientCategoriesPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete category"
+        description={
+          deleteTarget?.ingredient_count > 0
+            ? `"${deleteTarget.name}" is used by ${deleteTarget.ingredient_count} ingredient(s). They will be uncategorized. Delete anyway?`
+            : `Delete category "${deleteTarget?.name}"?`
+        }
+        icon={Trash2}
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
