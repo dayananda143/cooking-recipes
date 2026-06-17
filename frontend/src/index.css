@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background-color: #f9fafb; /* gray-50, matches AppShell's light bg */
+  color-scheme: light;
+  scrollbar-color: rgb(209 213 219) transparent; /* gray-300 thumb, Firefox */
+}
+html.dark {
+  background-color: #030712; /* gray-950, matches AppShell's dark bg */
+  color-scheme: dark;
+  scrollbar-color: rgb(55 65 81) transparent; /* gray-700 thumb, Firefox */
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(209 213 219); /* gray-300 */
+  border-radius: 9999px;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background-color: rgb(55 65 81); /* gray-700 */
+}
+
 @layer components {
   .input {
     @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400;
